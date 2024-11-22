@@ -15,7 +15,7 @@
 
     - name: Copy detection script to remote server
       ansible.builtin.copy:
-        src: scripts/detect_project_type.sh
+        src: ../scripts/detect_project_type.sh
         dest: /tmp/detect_project_type.sh
         mode: '0755'
 
