@@ -1,0 +1,34 @@
+pipeline {
+    agent any
+    environment {
+        DETECT_SCRIPT = "scripts/detect_project_type.sh"
+        SERVICES_FILE = "vars/services.yml"
+    }
+    stages {
+        stage('Load Services Configuration') {
+            steps {
+                script {
+                    services = readYaml file: SERVICES_FILE
+                }
+            }
+        }
+        stage('Process Services') {
+            steps {
+                script {
+                    services.each { service ->
+                        echo "Processing Service: ${service.name}"
+
+                        // Clone repository
+                        sh "git clone -b ${service.git_branch} ${service.git_repo} ${WORKSPACE}/${service.name}"
+
+                        // Detect project type and Dockerfile
+                        sh(script: "${DETECT_SCRIPT} ${WORKSPACE}/${service.name}") 
+
+                        // Clean up the cloned repo to save space
+                        sh "rm -rf ${WORKSPACE}/${service.name}"
+                    }
+                }
+            }
+        }
+    }
+}

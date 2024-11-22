@@ -1,0 +1,25 @@
+services:
+  - name: "UserService"
+    git_repo: "https://github.com/example/user-service"
+    git_branch: "main"
+    service_name: "user-service"
+    
+  - name: "OrderService"
+    git_repo: "https://github.com/example/order-service"
+    git_branch: "main"
+    service_name: "order-service"
+    
+  - name: "InventoryService"
+    git_repo: "https://github.com/example/inventory-service"
+    git_branch: "main"
+    service_name: "inventory-service"
+    
+  - name: "PaymentService"
+    git_repo: "https://github.com/example/payment-service"
+    git_branch: "main"
+    service_name: "payment-service"
+    
+  - name: "NotificationService"
+    git_repo: "https://github.com/example/notification-service"
+    git_branch: "main"
+    service_name: "notification-service"

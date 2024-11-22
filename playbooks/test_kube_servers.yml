@@ -1,0 +1,6 @@
+---
+- name: Test connectivity to Kubernetes servers
+  hosts: kube_servers
+  tasks:
+    - name: Ping Kubernetes server
+      ansible.builtin.ping:
