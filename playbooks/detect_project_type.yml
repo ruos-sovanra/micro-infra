@@ -1,6 +1,8 @@
 ---
 - name: Detect project type on remote server
   hosts: kube_servers
+  vars_files:
+    - vars/services.yml  # Include the services.yml file here
   tasks:
     - name: Install required packages
       ansible.builtin.package:
