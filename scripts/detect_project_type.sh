@@ -7,16 +7,22 @@ if [[ -z "$REPO_PATH" ]]; then
   exit 1
 fi
 
-# Check for Spring-specific files
+# Check for Spring files
 if [[ -f "$REPO_PATH/pom.xml" ]] || [[ -f "$REPO_PATH/build.gradle" ]]; then
-  echo "Spring Microservice detected."
-else
-  echo "Not a Spring Microservice."
+  echo "Spring Microservice"
+  exit 0
 fi
 
-# Check for Dockerfile
-if [[ -f "$REPO_PATH/Dockerfile" ]]; then
-  echo "Dockerfile found."
-else
-  echo "Dockerfile not found."
+# Check for React/Next.js (package.json with dependencies)
+if [[ -f "$REPO_PATH/package.json" ]]; then
+  if grep -q '"react"' "$REPO_PATH/package.json"; then
+    echo "React Project"
+    exit 0
+  elif grep -q '"next"' "$REPO_PATH/package.json"; then
+    echo "Next.js Project"
+    exit 0
+  fi
 fi
+
+# Default case
+echo "Unknown Project Type"

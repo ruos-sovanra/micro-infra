@@ -1,0 +1,43 @@
+---
+- name: Detect project type on remote server
+  hosts: kube_servers
+  tasks:
+    - name: Install required packages
+      ansible.builtin.package:
+        name: git
+        state: present
+
+    - name: Clone repositories
+      ansible.builtin.shell: |
+        git clone -b {{ item.git_branch }} {{ item.git_repo }} /tmp/{{ item.name }}
+      with_items: "{{ services }}"
+      ignore_errors: true
+
+    - name: Copy detection script to remote server
+      ansible.builtin.copy:
+        src: scripts/detect_project_type.sh
+        dest: /tmp/detect_project_type.sh
+        mode: '0755'
+
+    - name: Run detection script
+      ansible.builtin.shell: |
+        /tmp/detect_project_type.sh /tmp/{{ item.name }}
+      register: detection_results
+      with_items: "{{ services }}"
+      ignore_errors: true
+
+    - name: Output results
+      ansible.builtin.debug:
+        msg: "{{ item.stdout }}"
+      with_items: "{{ detection_results.results }}"
+
+    - name: Clean up cloned repositories and script
+      ansible.builtin.file:
+        path: /tmp/{{ item.name }}
+        state: absent
+      with_items: "{{ services }}"
+
+    - name: Remove detection script
+      ansible.builtin.file:
+        path: /tmp/detect_project_type.sh
+        state: absent
